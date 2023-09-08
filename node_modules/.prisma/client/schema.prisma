@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int          @id @default(autoincrement())
+  email    String       @unique
+  password String
+  name     String?
+  role     RoleUser
+  clients  ClientUser[]
+}
+
+model Client {
+  id     Int            @id @default(autoincrement())
+  name   String
+  cnpj   String
+  email  String?        @db.VarChar(255)
+  access ClientAccess[]
+  users  ClientUser[]
+}
+
+model ClientUser {
+  id         String   @id @default(uuid())
+  userId     Int
+  clientId   Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Client     Client   @relation(fields: [clientId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model ClientAccess {
+  accessId   Int
+  clientId   Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  id         String   @id @default(uuid())
+  access     Access   @relation(fields: [accessId], references: [id])
+  Client     Client   @relation(fields: [clientId], references: [id])
+}
+
+model Company {
+  id    Int      @id @default(autoincrement())
+  name  String
+  cnpj  String
+  email String
+  role  RoleUser
+}
+
+model Access {
+  id         Int                @id @default(autoincrement())
+  type       Int
+  server     Boolean
+  access     String
+  desc       String
+  typeAccess AccessTypeAccess[]
+  clients    ClientAccess[]
+}
+
+model AccessTypeAccess {
+  id           String     @id @default(uuid())
+  accessId     Int
+  typeAccessId Int
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+  access       Access     @relation(fields: [accessId], references: [id])
+  typeAccess   TypeAccess @relation(fields: [typeAccessId], references: [id])
+}
+
+model TypeAccess {
+  id          Int                @id @default(autoincrement())
+  description String
+  role        RoleUser
+  access      AccessTypeAccess[]
+}
+
+enum RoleUser {
+  ADMIN
+  SUPORTE
+  CLIENTE
+}

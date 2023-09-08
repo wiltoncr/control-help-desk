@@ -1,0 +1,41 @@
+{
+  "name": "easycontrol",
+  "version": "1.0.0",
+  "description": "controle de clientes remotos",
+  "main": "src/server.js",
+  "module": "ESModule",
+  "scripts": {
+    "start": "nodemon ./src/index.js --ignore public --ignore frontend",
+    "start:dev": "webpack -w"
+  },
+  "prisma": {
+    "schema": "./src/infra/database/schema.prisma"
+  },
+  "author": "Wilton CR",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^4.12.0",
+    "axios": "^1.4.0",
+    "connect-flash": "^0.1.1",
+    "core-js": "^3.3.2",
+    "css-loader": "^3.2.0",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mysql2": "^3.2.0",
+    "net": "^1.0.2",
+    "regenerator-runtime": "^0.13.3",
+    "style-loader": "^1.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.22",
+    "prisma": "^4.12.0",
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9"
+  }
+}

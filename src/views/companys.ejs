@@ -1,0 +1,234 @@
+<%- include('includes/head')%>
+  <main>
+    <div class="modal-overlay d-none">
+      <div class="modal-content">
+        <div class="modal-board">
+          <div class="modal-card">
+            <div class="modal-header">
+              <div class="modal-title">
+                <h4>Novo Cadastro de Empresa</h4>
+              </div>
+            </div>
+            <div class="modal-body">
+              <div class="input-filters">
+                <label for="name">Nome</label>
+                <input type="text" name="name">
+              </div>
+              <div class="input-filters">
+                <label for="cnpj">CNPJ</label>
+                <input type="text" name="cnpj" placeholder="00.000.000/0000-00">
+              </div>
+              <div class="input-filters">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div class="modal-card-footer">
+                <button class="btn_control warn">
+                  <span><i _ngcontent-gaw-c86="" class="ri-close-line"></i>Cancelar</span>
+                </button>
+                <button class="btn_control success">
+                  <span><i _ngcontent-gaw-c86="" class="ri-save-2-line"></i>Salvar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section id="hero">
+      <div class="board_card">
+        <div class="card">
+          <div class="header_card">
+            <span class="title_card">Filter</span>
+            <button class="btn_insert">Insert</button>
+            <span class="arrow"></span>
+          </div>
+          <div class="body_card">
+            <div class="table_card">
+              <div class="table_header_card row">
+                <div class="table_column_layout">
+                  <div class="table_cell">
+                    <div class="table_container">
+                      ID
+                    </div>
+                    <div class="arrow"></div>
+                  </div>
+                </div>
+                <div class="table_column_layout">
+                  <div class="table_cell">
+                    <div class="table_container">
+                      NAME
+                    </div>
+                    <div class="arrow"></div>
+                  </div>
+                </div>
+                <div class="table_column_layout">
+                  <div class="table_cell">
+                    <div class="table_container">
+                      CNPJ
+                    </div>
+                    <div class="arrow"></div>
+                  </div>
+                </div>
+                <div class="table_column_layout">
+                  <div class="table_cell">
+                    <div class="table_container">
+                      EMAIL
+                    </div>
+                    <div class="arrow"></div>
+                  </div>
+                </div>
+                <div class="table_column_layout">
+                  <div class="table_cell">
+                    <div class="table_container">
+                      ACTIONS
+                    </div>
+                    <div class="arrow"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid">
+              </div>
+              <div class="table_footer_card row">
+                <div class="table_column_layout">
+                  <div class="table_cell">
+                    <div class="table_container">
+                      <div class="grid_count"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="paginator_card">
+              <div class="paginator_container">
+                <div class="paginator_page_size">
+                  <div class="paginator_page_size_lable">
+                    Items for page: all
+                  </div>
+                  <div class="paginator_page_size_select">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    /*catch companys in backend*/
+    let companys = {};
+    const page = 'Company';
+    $.ajax({
+      'url': '/company/getCompanys',
+      'type': 'GET',
+      'success': function (data) {
+        companys = data.companys;
+        createGrid(companys);
+      },
+      'error': function (request, error) {
+        console.log(JSON.stringify(request));
+      }
+    });
+
+    function createGrid(data) {
+      let gridCount = document.querySelector('.grid_count');
+      gridCount.innerHTML = 'Total: ' + data.length;
+
+      let parentElement = document.querySelector('.grid');
+
+      data.forEach(property => {
+        let row = document.createElement('div');
+        row.classList.add('row');
+
+        let btns = document.createElement('div');
+
+        let btn_delete = document.createElement('button');
+        btn_delete.classList.add('btn_delete', 'btn_icon');
+        btn_delete.id = property.id;
+        btn_delete.addEventListener('click', fDelete);
+        btn_delete.innerHTML = '<span><i class="ri-delete-bin-7-line"></i></span>';
+
+        let btn_edit = document.createElement('button');
+        btn_edit.classList.add('btn_edit', 'btn_icon');
+        btn_edit.id = property.id
+        btn_edit.innerHTML = '<span><i class="ri-pencil-line fa-lg"></i></span>';
+
+
+        btns.appendChild(btn_delete);
+        btns.appendChild(btn_edit);
+
+        let id = createLayoutGrid(property.id);
+        let name = createLayoutGrid(property.name);
+        let cnpj = createLayoutGrid(property.cnpj);
+        let email = createLayoutGrid(property.email);
+        let actions = createLayoutGrid();
+        actions.querySelector('.table_container').appendChild(btns);
+
+        row.appendChild(id);
+        row.appendChild(name);
+        row.appendChild(cnpj);
+        row.appendChild(email);
+        row.appendChild(actions);
+
+        parentElement.appendChild(row);
+      });
+    }
+
+    function createLayoutGrid(property) {
+      let layout = document.createElement('div');
+      layout.classList.add('table_column_layout');
+
+      let tableCell = document.createElement('div');
+      tableCell.classList.add('table_cell');
+
+      let tableContainer = document.createElement('div');
+      tableContainer.classList.add('table_container');
+
+      //let element = document.createElement('div');
+      tableContainer.textContent = property;
+
+      //tableContainer.appendChild(element);
+      tableCell.appendChild(tableContainer);
+      layout.appendChild(tableCell);
+      return layout;
+    }
+
+    function fDelete(e) {
+      let btn = e.currentTarget;
+      $.ajax({
+        'url': '/company/deleteCompanyById',
+        'type': 'DELETE',
+        'data': { id: btn.id },
+        'success': function (data) {
+          btn.parentElement.
+            parentElement.
+            parentElement.
+            parentElement.
+            parentElement.remove();
+        },
+        'error': function (request, error) {
+          console.log(JSON.stringify(request));
+        }
+      });
+    }
+
+    function getPage(){
+      return page;
+    }
+
+    const toggleBtn = document.querySelector('.toggle_btn');
+    const toggleBtnIcon = document.querySelector('.toggle_btn svg');
+    const dropdpwnMenu = document.querySelector('.dropdown_menu');
+
+    toggleBtn.onclick = function () {
+      dropdpwnMenu.classList.toggle('open');
+      //document.querySelectorAll('.arrow').forEach( arrow => arrow.style.display = "none");
+      //const isOpen = dropdpwnMenu.classList.contains('open');
+      /*toggleBtnIcon.classList = isOpen ? ''*/
+    }
+  </script>
+
+  <%- include('includes/footer')%>
