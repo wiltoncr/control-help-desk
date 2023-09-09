@@ -1,7 +1,7 @@
 {
-  "name": "easycontrol",
+  "name": "control-help-desk",
   "version": "1.0.0",
-  "description": "controle de clientes remotos",
+  "description": "controle de remotos",
   "main": "src/server.js",
   "module": "ESModule",
   "scripts": {
