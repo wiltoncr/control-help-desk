@@ -33,6 +33,12 @@ class UserController {
     async createUser(req, res) {
         try {
             const { name, email, password, role = 'CLIENTE' } = req.body
+            
+            if(!name || !email || !password){
+                return res.status(400).json({
+                    error: "name, email and password is required."
+                });
+            };
 
             const user = {
                 name: name,
@@ -41,12 +47,15 @@ class UserController {
                 role: role
             }
             await this.userRepo.save(user)
-            return res.status(204).json("User Created")
+            return res.status(201).json("User Created")
         } catch (err) {
-            console.log(err);
-            return res.json({ error: 'Internal server error' });
-        }
-    }
+            if(err.code =='P2002'){
+                return  res.status(400).json({ error: `error with  this fields ${err.meta.target[0]}` });
+            };
+            return res.status(500).json({ error: 'Internal server error' });
+        };
+    };
+    
     async getUserById(req, res) {
         try {
             const { id } = req.query
