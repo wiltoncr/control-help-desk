@@ -8,9 +8,11 @@ class UserRepo {
         return user;
     }
 
-    async save(user) {
-        await prisma.user.create({ data: user })
-    }
+    async save(newUser) {
+        const user = await prisma.user.create({ data: newUser });
+        return user;
+    };
+
     async getUserById(id) {
         const user = await prisma.user.findFirst({
             where: { id: id }
@@ -21,7 +23,11 @@ class UserRepo {
     async deleteUserById(id) {
         const user = await prisma.user.delete({
             where: { id: id }
-        })
+        });
+        if (!user) {
+            return { mensagem: `user com nome: ${name} não encontrado` }
+        };
+
         return user
     }
 
