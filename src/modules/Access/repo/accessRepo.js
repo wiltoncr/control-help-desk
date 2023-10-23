@@ -37,13 +37,15 @@ class AccessRepo {
     }
 
     async save(payloadAccess) {
-        await prisma.access.create({ data: payloadAccess });
-    }
+        const access = await prisma.access.create({ data: payloadAccess });
+        return access ?? [];
+    };
+
     async getAccessById(id) {
         const access = await prisma.access.findFirst({
             where: { id: id }
         })
-        return access
+        return access ?? [];
     }
     async getAccessByDesc(desc) {
         const access = await prisma.access.findFirst({
@@ -53,13 +55,9 @@ class AccessRepo {
                     mode: 'insensitive'
                 }
             }
-        })
-        if (!access) {
-            return { mensagem: `Acesso com nome: ${desc} não encontrado` }
-        }
-        return access
-    }
-
-}
+        });        
+        return access ?? [];
+    };
+};
 
 module.exports = {AccessRepo};

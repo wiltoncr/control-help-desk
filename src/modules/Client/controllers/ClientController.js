@@ -2,51 +2,41 @@ class ClientController {
 
     constructor(clientRepo) {
         this.clientRepo = clientRepo
-    }
-
-    async getAllData() {
+    };
+    async getAll(req, res) {
         try {
-            return await this.clientRepo.getClient();
+            const clients = await this.clientRepo.getClient();
+            return res.json({ clients });
         } catch (err) {
             console.log(err);
-            return null;
-        }
-    }
-
-    async getAll(req, res) {
-        const clients = await this.getAllData();
-        return clients ? res.json({ clients }) : res.status(500).json({ error: 'Internal server error' });
-    }
-
+            return res.status(500).json({ error: 'Internal server error' });
+        };
+    };
     async delete(req, res) {
         try {
-            const { id } = req.body
-            const idInt = parseInt(id)
-            const client = await this.clientRepo.deleteClientById(idInt)
+            const { id } = req.params;
+            if (!Number.isInteger(Number(id))) {
+                return res.status(400).json({ error: 'ID is not valid!' });
+            };
+            const client = await this.clientRepo.deleteClientById(Number(id));
             return res.status(200).json({ client })
         } catch (err) {
             console.log(err);
             return res.json({ error: 'Internal server error' });
         }
-    }
-
+    };
     async createClient(req, res) {
         try {
-            const { type, server, client, desc } = req.body
+            const { name, cnpj, email } = req.body
             console.log(req.body);
-            const payloadClient = {
-                type: Number(type),
-                server: Boolean(server),
-                client: client,
-                desc: desc
-            };
-            await this.clientRepo.save(payloadClient);
-            return res.status(204).json("Client Created");
+            const payloadClient = { name, cnpj, email };
+            const newClient = await this.clientRepo.save(payloadClient);
+            return res.status(201).json({client: newClient});
         } catch (err) {
             console.log(err);
             return res.json({ error: 'Internal server error' });
         }
-    }
+    };
     async getClientById(req, res) {
         try {
             const { id } = req.query
@@ -57,17 +47,33 @@ class ClientController {
             console.log(err);
             return res.json({ error: 'Internal server error' });
         }
-    }
-    async getClientByDesc(req, res) {
+    };
+    async getClientByName(req, res) {
         try {
-            const { desc } = req.query
-            const client = await this.clientRepo.getClientByDesc(desc)
+            const { name } = req.query;
+            if (!name) {
+                return res.status(400).json({ error: 'name is not valid or empty' });
+            };
+            const client = await this.clientRepo.getClientByName(name)
             return res.status(200).json({ client })
         } catch (err) {
             console.log(err);
             return res.json({ error: 'Internal server error' });
-        }
-    }
-}
+        };
+    };
+    async getClientByEmail(req, res) {
+        try {
+            const { email } = req.query;
+            if (!email) {
+                return res.status(400).json({ error: 'email is not valid or empty' });
+            };
+            const client = await this.clientRepo.getClientByName(email);
+            return res.status(200).json({ client });
+        } catch (err) {
+            console.log(err);
+            return res.json({ error: 'Internal server error' });
+        };
+    };
+};
 
 module.exports = { ClientController };

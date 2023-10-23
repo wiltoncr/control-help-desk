@@ -33,7 +33,7 @@ class CompanyController {
 
     async createCompany(req, res) {
         try {
-            const { name, email, cnpj, role = 'CLIENTE' } = req.body
+            const { name, email, cnpj, role = 'CLIENTE' } = req.body;
 
             if (!name || !email || !cnpj) {
                 return res.status(400).json({
@@ -52,7 +52,7 @@ class CompanyController {
 
     async getCompanyById(req, res) {
         try {
-            const { id } = req.params
+            const { id } = req.params;
             if (!Number.isInteger(Number(id))) {
                 return res.status(400).json({ error: 'ID is not valid!' });
             };

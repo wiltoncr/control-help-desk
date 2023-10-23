@@ -8,8 +8,9 @@ class ClientRepo {
         return client;
     }
     async save(payloadClient) {
-        await prisma.client.create({ data: payloadClient });
-    }
+        const client = await prisma.client.create({ data: payloadClient });
+        return client;
+    };
 
     async deleteClientById(id) {
         const client = await prisma.client.delete({
@@ -24,21 +25,30 @@ class ClientRepo {
         })
         return client
     }
-    async getClientByDesc(desc) {
+    async getClientByName(name) {
         const client = await prisma.client.findFirst({
             where: {
-                desc: {
-                    contains: desc,
+                name: {
+                    contains: name,
                     mode: 'insensitive'
                 }
             }
-        })
-        if (!client) {
-            return { mensagem: `Cliente com nome: ${desc} não encontrado` }
-        }
-        return client
+        });
+        return client ?? [];
     };
 
-}
+    async getClientByEmail(email) {
+        const client = await prisma.client.findFirst({
+            where: {
+                email: {
+                    contains: email,
+                    mode: 'insensitive'
+                }
+            }
+        });
+        return client ?? [];
+    };
+
+};
 
 module.exports = {ClientRepo};
