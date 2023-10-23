@@ -24,6 +24,9 @@ class UserController {
             return res.status(200).json({ user })
         } catch (err) {
             console.log(err);
+            if(err.code = 'P2025'){
+                return res.status(404).json({ error: 'not Found!' });
+            };
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
@@ -62,7 +65,7 @@ class UserController {
                 return res.status(400).json({ error: 'ID is not valid!' });
             };
             const user = await this.userRepo.getUserById(Number(id));
-            return res.status(200).json({ user })
+            return res.status(200).json({ user });
         } catch (err) {
             console.log(err);
             return res.status(500).json({ error: 'Internal server error' });
@@ -71,25 +74,32 @@ class UserController {
 
     async getUserByName(req, res) {
         try {
-            const { name } = req.query
-            const user = await this.userRepo.getUserByName(name)
+            const { name } = req.query;
+            if (!name) {
+                return res.status(400).json({ error: 'name is not valid or empty' });          
+            };
+            const user = await this.userRepo.getUserByName(name);
+
             return res.status(200).json({ user })
         } catch (err) {
             console.log(err);
-            return res.json({ error: 'Internal server error' });
+            return res.status(500).json({ error: 'Internal server error' });
         };
     };
 
     async getUserByEmail(req, res) {
         try {
-            const { email } = req.query
-            const user = await this.userRepo.getUserByEmail(email)
-            return res.status(200).json({ user })
+            const { email } = req.query;
+            if (!email) {
+                return res.status(400).json({ error: 'email is not valid or empty' });          
+            };
+            const user = await this.userRepo.getUserByEmail(email);
+            return res.status(200).json({ user });
         } catch (err) {
             console.log(err);
-            return res.json({ error: 'Internal server error' });
+            return res.status(500).json({ error: 'Internal server error' });
         };
     };
-}
+};
 
 module.exports = { UserController };

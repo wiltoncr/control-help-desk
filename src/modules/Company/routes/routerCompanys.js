@@ -3,24 +3,18 @@ const { controllerCompany } = require('../controllers/index.js');
 
 const routerCompanys = express.Router();
 
+routerCompanys.get('/', (req, res) => controllerCompany.getAll(req, res));
 
-routerCompanys.get('/', async (req, res) => {
-    const companys = await controllerCompany.getAllData();
-    res.render('companys', {page: 'company'});
-}); 
+routerCompanys.get('/getByName', (req, res) => controllerCompany.getCompanyByName(req, res));
 
-routerCompanys.post('/createCompany', (req, res) => controllerCompany.createCompany(req, res))
+routerCompanys.get('/getByEmail', (req, res) => controllerCompany.getCompanyByEmail(req, res));
 
-routerCompanys.delete('/deleteCompanyById', (req, res) => controllerCompany.delete(req, res));
+routerCompanys.get('/:id', (req, res) => controllerCompany.getCompanyById(req, res));
 
-routerCompanys.get('/getCompanys', (req, res) => controllerCompany.getAll(req, res))
+routerCompanys.post('/', (req, res) => controllerCompany.createCompany(req, res));
 
-routerCompanys.get('/getCompanyById', (req, res) => controllerCompany.getCompanyById(req, res))
-
-routerCompanys.get('/getCompanyByName', (req, res) => controllerCompany.getCompanyByName(req, res))
-
-routerCompanys.get('/getCompanyByEmail', (req, res) => controllerCompany.getCompanyByEmail(req, res))
+routerCompanys.delete('/:id', (req, res) => controllerCompany.delete(req, res));
 
 module.exports = {
     routerCompanys
-}
+};

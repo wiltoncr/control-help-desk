@@ -16,9 +16,9 @@ class UserRepo {
     async getUserById(id) {
         const user = await prisma.user.findFirst({
             where: { id: id }
-        })
-        return user
-    }
+        });
+        return user ?? [];
+    };
 
     async deleteUserById(id) {
         const user = await prisma.user.delete({
@@ -39,12 +39,9 @@ class UserRepo {
                     mode: 'insensitive'
                 }
             }
-        })
-        if (!user) {
-            return { mensagem: `user com nome: ${name} não encontrado` }
-        }
-        return user
-    }
+        });
+        return user ?? [];
+    };
 
     async getUserByEmail(email) {
         const user = await prisma.user.findFirst({
@@ -54,13 +51,10 @@ class UserRepo {
                     mode: 'insensitive'
                 }
             }
-        })
-        if (!user) {
-            return { mensagem: `user com email: ${email} não encontrado` }
-        }
-        return user
-    }
-
-}
+        });
+        
+        return user ?? [];
+    };
+};
 
 module.exports = {UserRepo}
