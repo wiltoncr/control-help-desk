@@ -1,4 +1,5 @@
 
+const bcryptjs = require('bcryptjs');
 const {prisma} = require( '../../../infra/database/prismaCliente.js');
 
 class UserRepo {
@@ -53,8 +54,12 @@ class UserRepo {
             }
         });
         
-        return user ?? [];
+        return user;
     };
+
+    async passwordIsValid(password, hash) {
+        return await bcryptjs.compare(password, hash);
+    }
 };
 
 module.exports = {UserRepo}

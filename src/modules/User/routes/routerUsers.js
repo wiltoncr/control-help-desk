@@ -1,9 +1,10 @@
 const express = require('express');
+const {controlerLogin} = require('../../Login/controllers');
 const { controlerUser } = require('../controllers/index.js');
 
 const routerUsers = express.Router();
 
-routerUsers.get('/', (req, res) => controlerUser.getAll(req, res));
+routerUsers.get('/', controlerLogin.required, (req, res) => controlerUser.show(req, res));
 
 routerUsers.get('/getByName', (req, res) => controlerUser.getUserByName(req, res));
 

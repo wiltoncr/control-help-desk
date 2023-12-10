@@ -1,13 +1,13 @@
+const bcryptjs = require('bcryptjs');
 class UserController {
 
     constructor(userRepo) {
         this.userRepo = userRepo
     }
 
-    async getAll(req, res) {
+    async show(req, res) {
         try {
-            const users = await this.userRepo.getUsers();
-            return res.json({ users });
+            return res.json({ user: req.user });
         } catch (err) {
             console.log(err);
             return res.status(500).json({ error: 'Internal server error' });
@@ -41,10 +41,12 @@ class UserController {
                 });
             };
 
+            const password_hash = await bcryptjs.hash(password, 8);
+
             const user = {
                 name: name,
                 email: email,
-                password: password,
+                password: password_hash,
                 role: role
             };
 
