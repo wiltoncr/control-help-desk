@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "module": "ESModule",
   "scripts": {
-    "start": "nodemon ./src/index.js --ignore public --ignore frontend",
+    "start": "nodemon ./src/index.js",
     "start:dev": "webpack -w"
   },
   "prisma": {
@@ -35,7 +35,6 @@
     "dotenv": "^16.0.3",
     "nodemon": "^3.0.1",
     "prisma": "^4.12.0",
-    "webpack": "^5.41.2",
     "webpack-cli": "^4.3.9"
   }
 }
