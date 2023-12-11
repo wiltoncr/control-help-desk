@@ -2,11 +2,7 @@ const jwt = require('jsonwebtoken');
 const { userRepo } = require('../../User/repo');
 
 class LoginController {
-  constructor(loginRepo) {
-    this.loginRepo = loginRepo;
-  }
-
-  static async store(req, res) {
+  async store(req, res) {
     try {
       const { email, password } = req.body;
 
@@ -35,7 +31,7 @@ class LoginController {
     }
   }
 
-  static async required(req, res, next) {
+  async required(req, res, next) {
     const { authorization } = req.headers;
 
     if (!authorization) {

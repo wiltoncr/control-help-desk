@@ -1,7 +1,7 @@
 const { prisma } = require('../../../infra/database/prismaCliente');
 
 class AccessRepo {
-  static async getAccess() {
+  async getAccess() {
     const access = await prisma.access.findMany({
       include: {
         clients: {
@@ -25,7 +25,7 @@ class AccessRepo {
     return access;
   }
 
-  static async deleteAccessById(id) {
+  async deleteAccessById(id) {
     const access = await prisma.access.delete({
       where: { id },
       include: {
@@ -35,19 +35,19 @@ class AccessRepo {
     return access;
   }
 
-  static async save(payloadAccess) {
+  async save(payloadAccess) {
     const access = await prisma.access.create({ data: payloadAccess });
     return access ?? [];
   }
 
-  static async getAccessById(id) {
+  async getAccessById(id) {
     const access = await prisma.access.findFirst({
       where: { id },
     });
     return access ?? [];
   }
 
-  static async getAccessByDesc(desc) {
+  async getAccessByDesc(desc) {
     const access = await prisma.access.findFirst({
       where: {
         desc: {

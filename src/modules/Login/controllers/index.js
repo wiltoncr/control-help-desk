@@ -1,8 +1,7 @@
-const { loginRepo } = require('../repo');
 const { LoginController } = require('./LoginController');
 
-const controlerLogin = new LoginController(loginRepo);
+const controleLogin = new LoginController();
 
 module.exports = {
-  controlerLogin,
+  controleLogin,
 };

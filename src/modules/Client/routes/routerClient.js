@@ -1,18 +1,19 @@
 const express = require('express');
+const { controleLogin } = require('../../Login/controllers');
 const { controllerClient } = require('../controllers');
 
 const routerClient = express.Router();
 
-routerClient.get('/', (req, res) => controllerClient.getAll(req, res));
+routerClient.get('/',  (req, res) => controllerClient.getAll(req, res));
 
-routerClient.get('/getByName', (req, res) => controllerClient.getClientByName(req, res));
+routerClient.get('/getByName', controleLogin.required, (req, res) => controllerClient.getClientByName(req, res));
 
-routerClient.get('/getByEmail', (req, res) => controllerClient.getClientByEmail(req, res));
+routerClient.get('/getByEmail', controleLogin.required, (req, res) => controllerClient.getClientByEmail(req, res));
 
-routerClient.get('/:id', (req, res) => controllerClient.getClientById(req, res));
+routerClient.get('/:id', controleLogin.required, (req, res) => controllerClient.getClientById(req, res));
 
-routerClient.post('/', (req, res) => controllerClient.createClient(req, res));
+routerClient.post('/', controleLogin.required, (req, res) => controllerClient.createClient(req, res));
 
-routerClient.delete('/:id', (req, res) => controllerClient.delete(req, res));
+routerClient.delete('/:id', controleLogin.required, (req, res) => controllerClient.delete(req, res));
 
 module.exports = { routerClient };

@@ -5,9 +5,9 @@ class UserController {
     this.userRepo = userRepo;
   }
 
-  static async show(req, res) {
+  async show(req, res) {
     try {
-      return res.json({ user: req.user });
+      return res.json(req.user);
     } catch (err) {
       console.log(err);
       return res.status(500).json({ error: 'Internal server error' });

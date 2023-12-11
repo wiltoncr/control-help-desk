@@ -1,31 +1,31 @@
 const { prisma } = require('../../../infra/database/prismaCliente');
 
 class ClientRepo {
-  static async getClient() {
+  async getClient() {
     const client = await prisma.client.findMany();
     return client;
   }
 
-  static async save(payloadClient) {
+  async save(payloadClient) {
     const client = await prisma.client.create({ data: payloadClient });
     return client;
   }
 
-  static async deleteClientById(id) {
+  async deleteClientById(id) {
     const client = await prisma.client.delete({
       where: { id },
     });
     return client;
   }
 
-  static async getClientById(id) {
+  async getClientById(id) {
     const client = await prisma.client.findFirst({
       where: { id },
     });
     return client;
   }
 
-  static async getClientByName(name) {
+  async getClientByName(name) {
     const client = await prisma.client.findFirst({
       where: {
         name: {
@@ -37,7 +37,7 @@ class ClientRepo {
     return client ?? [];
   }
 
-  static async getClientByEmail(email) {
+  async getClientByEmail(email) {
     const client = await prisma.client.findFirst({
       where: {
         email: {

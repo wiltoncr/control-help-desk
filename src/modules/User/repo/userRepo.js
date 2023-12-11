@@ -2,24 +2,24 @@ const bcryptjs = require('bcryptjs');
 const { prisma } = require('../../../infra/database/prismaCliente');
 
 class UserRepo {
-  static async getUsers() {
+  async getUsers() {
     const user = await prisma.user.findMany();
     return user;
   }
 
-  static async save(newUser) {
+  async save(newUser) {
     const user = await prisma.user.create({ data: newUser });
     return user;
   }
 
-  static async getUserById(id) {
+  async getUserById(id) {
     const user = await prisma.user.findFirst({
       where: { id },
     });
     return user ?? [];
   }
 
-  static async deleteUserById(id) {
+  async deleteUserById(id) {
     const user = await prisma.user.delete({
       where: { id },
     });
@@ -30,7 +30,7 @@ class UserRepo {
     return user;
   }
 
-  static async getUserByName(name) {
+  async getUserByName(name) {
     const user = await prisma.user.findFirst({
       where: {
         name: {
@@ -42,7 +42,7 @@ class UserRepo {
     return user ?? [];
   }
 
-  static async getUserByEmail(email) {
+  async getUserByEmail(email) {
     const user = await prisma.user.findFirst({
       where: {
         email: {
@@ -55,7 +55,7 @@ class UserRepo {
     return user;
   }
 
-  static async passwordIsValid(password, hash) {
+  async passwordIsValid(password, hash) {
     const result = await bcryptjs.compare(password, hash);
     return result;
   }

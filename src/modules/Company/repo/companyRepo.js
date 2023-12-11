@@ -1,31 +1,31 @@
 const { prisma } = require('../../../infra/database/prismaCliente');
 
 class CompanyRepo {
-  static async getCompany() {
+  async getCompany() {
     const company = await prisma.company.findMany();
     return company;
   }
 
-  static async save(newCompany) {
+  async save(newCompany) {
     const company = await prisma.company.create({ data: newCompany });
     return company;
   }
 
-  static async getCompanyById(id) {
+  async getCompanyById(id) {
     const company = await prisma.company.findFirst({
       where: { id },
     });
     return company ?? [];
   }
 
-  static async deleteCompanyById(id) {
+  async deleteCompanyById(id) {
     const company = await prisma.company.delete({
       where: { id },
     });
     return company;
   }
 
-  static async getCompanyByName(name) {
+  async getCompanyByName(name) {
     const company = await prisma.company.findFirst({
       where: {
         name: {
@@ -37,7 +37,7 @@ class CompanyRepo {
     return company ?? [];
   }
 
-  static async getCompanyByEmail(email) {
+  async getCompanyByEmail(email) {
     const company = await prisma.company.findFirst({
       where: {
         email: {
