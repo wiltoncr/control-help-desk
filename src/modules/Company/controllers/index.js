@@ -1,9 +1,8 @@
+const { companyRepo } = require('../repo/index');
+const { CompanyController } = require('./CompanyController');
 
-const { companyRepo } = require( "../repo/index.js");
-const { CompanyController } = require( "./CompanyController.js");
+const controllerCompany = new CompanyController(companyRepo);
 
-const controllerCompany = new CompanyController(companyRepo)
-
-module.exports = {  
-    controllerCompany
-}
+module.exports = {
+  controllerCompany,
+};

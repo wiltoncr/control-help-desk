@@ -1,6 +1,6 @@
 const express = require('express');
-const {controlerLogin} = require('../../Login/controllers');
-const { controlerUser } = require('../controllers/index.js');
+const { controlerLogin } = require('../../Login/controllers');
+const { controlerUser } = require('../controllers');
 
 const routerUsers = express.Router();
 
@@ -17,5 +17,5 @@ routerUsers.post('/', (req, res) => controlerUser.createUser(req, res));
 routerUsers.delete('/:id', (req, res) => controlerUser.delete(req, res));
 
 module.exports = {
-    routerUsers
+  routerUsers,
 };

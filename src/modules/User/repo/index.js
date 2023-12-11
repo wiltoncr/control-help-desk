@@ -1,5 +1,5 @@
-const { UserRepo } = require( "./userRepo.js");
+const { UserRepo } = require('./userRepo');
 
-const userRepo = new UserRepo()
+const userRepo = new UserRepo();
 
-module.exports = { userRepo }
+module.exports = { userRepo };

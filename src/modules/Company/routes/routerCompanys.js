@@ -1,5 +1,5 @@
 const express = require('express');
-const { controllerCompany } = require('../controllers/index.js');
+const { controllerCompany } = require('../controllers/index');
 
 const routerCompanys = express.Router();
 
@@ -16,5 +16,5 @@ routerCompanys.post('/', (req, res) => controllerCompany.createCompany(req, res)
 routerCompanys.delete('/:id', (req, res) => controllerCompany.delete(req, res));
 
 module.exports = {
-    routerCompanys
+  routerCompanys,
 };

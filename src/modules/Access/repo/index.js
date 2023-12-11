@@ -1,4 +1,4 @@
-const { AccessRepo }  = require( "./accessRepo.js");
+const { AccessRepo } = require('./accessRepo');
 
 const accessRepo = new AccessRepo();
 

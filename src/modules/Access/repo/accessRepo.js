@@ -1,63 +1,63 @@
-
-const {prisma}  = require( '../../../infra/database/prismaCliente.js');
+const { prisma } = require('../../../infra/database/prismaCliente');
 
 class AccessRepo {
+  static async getAccess() {
+    const access = await prisma.access.findMany({
+      include: {
+        clients: {
+          select: {
+            Client: true,
+          },
+        },
+      },
+    });
 
-    async getAccess() {
-        const access = await prisma.access.findMany({
-            include: {
-              clients: {
-                select:{
-                    Client: true
-                },
-              },
-            },
-          });
-          access.forEach(ac => {
-            if(typeof ac.clients[0] != 'undefined') {
-                ac.client = ac.clients[0].Client;
-                delete ac.clients;
-            }else {
-                ac.client = {id: '', name : 'Não Encontrado!'};
-                delete ac.clients;
-            }
-          });
-          
-        return access;
-    }
+    access.forEach((ac) => {
+      if (typeof ac.clients[0] !== 'undefined') {
+        ac.client = ac.clients[0].Client;
+        delete ac.clients;
+      } else {
+        ac.client = { id: '', name: 'Não Encontrado!' };
+        delete ac.clients;
+      }
+    });
 
-    async deleteAccessById(id) {
-        const access = await prisma.access.delete({
-            where: { id: id },
-            include: {
-                clients: true
-            }
-        })
-        return access
-    }
+    return access;
+  }
 
-    async save(payloadAccess) {
-        const access = await prisma.access.create({ data: payloadAccess });
-        return access ?? [];
-    };
+  static async deleteAccessById(id) {
+    const access = await prisma.access.delete({
+      where: { id },
+      include: {
+        clients: true,
+      },
+    });
+    return access;
+  }
 
-    async getAccessById(id) {
-        const access = await prisma.access.findFirst({
-            where: { id: id }
-        })
-        return access ?? [];
-    }
-    async getAccessByDesc(desc) {
-        const access = await prisma.access.findFirst({
-            where: {
-                desc: {
-                    contains: desc,
-                    mode: 'insensitive'
-                }
-            }
-        });        
-        return access ?? [];
-    };
-};
+  static async save(payloadAccess) {
+    const access = await prisma.access.create({ data: payloadAccess });
+    return access ?? [];
+  }
 
-module.exports = {AccessRepo};
+  static async getAccessById(id) {
+    const access = await prisma.access.findFirst({
+      where: { id },
+    });
+    return access ?? [];
+  }
+
+  static async getAccessByDesc(desc) {
+    const access = await prisma.access.findFirst({
+      where: {
+        desc: {
+          contains: desc,
+          mode: 'insensitive',
+        },
+      },
+    });
+    return access ?? [];
+  }
+}
+
+module.exports = { AccessRepo };

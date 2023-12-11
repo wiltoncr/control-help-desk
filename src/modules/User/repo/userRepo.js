@@ -1,65 +1,64 @@
-
 const bcryptjs = require('bcryptjs');
-const {prisma} = require( '../../../infra/database/prismaCliente.js');
+const { prisma } = require('../../../infra/database/prismaCliente');
 
 class UserRepo {
+  static async getUsers() {
+    const user = await prisma.user.findMany();
+    return user;
+  }
 
-    async getUsers() {
-        const user = await prisma.user.findMany()
-        return user;
+  static async save(newUser) {
+    const user = await prisma.user.create({ data: newUser });
+    return user;
+  }
+
+  static async getUserById(id) {
+    const user = await prisma.user.findFirst({
+      where: { id },
+    });
+    return user ?? [];
+  }
+
+  static async deleteUserById(id) {
+    const user = await prisma.user.delete({
+      where: { id },
+    });
+    if (!user) {
+      return { mensagem: `user com Id: ${id} não encontrado` };
     }
 
-    async save(newUser) {
-        const user = await prisma.user.create({ data: newUser });
-        return user;
-    };
+    return user;
+  }
 
-    async getUserById(id) {
-        const user = await prisma.user.findFirst({
-            where: { id: id }
-        });
-        return user ?? [];
-    };
+  static async getUserByName(name) {
+    const user = await prisma.user.findFirst({
+      where: {
+        name: {
+          contains: name,
+          mode: 'insensitive',
+        },
+      },
+    });
+    return user ?? [];
+  }
 
-    async deleteUserById(id) {
-        const user = await prisma.user.delete({
-            where: { id: id }
-        });
-        if (!user) {
-            return { mensagem: `user com nome: ${name} não encontrado` }
-        };
+  static async getUserByEmail(email) {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: {
+          contains: email,
+          mode: 'insensitive',
+        },
+      },
+    });
 
-        return user
-    }
+    return user;
+  }
 
-    async getUserByName(name) {
-        const user = await prisma.user.findFirst({
-            where: {
-                name: {
-                    contains: name,
-                    mode: 'insensitive'
-                }
-            }
-        });
-        return user ?? [];
-    };
+  static async passwordIsValid(password, hash) {
+    const result = await bcryptjs.compare(password, hash);
+    return result;
+  }
+}
 
-    async getUserByEmail(email) {
-        const user = await prisma.user.findFirst({
-            where: {
-                email: {
-                    contains: email,
-                    mode: 'insensitive'
-                }
-            }
-        });
-        
-        return user;
-    };
-
-    async passwordIsValid(password, hash) {
-        return await bcryptjs.compare(password, hash);
-    }
-};
-
-module.exports = {UserRepo}
+module.exports = { UserRepo };

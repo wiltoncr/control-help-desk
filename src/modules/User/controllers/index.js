@@ -1,9 +1,8 @@
+const { userRepo } = require('../repo');
+const { UserController } = require('./UserController');
 
-const { userRepo } = require("../repo/index.js");
-const { UserController } = require("./UserController.js");
-
-const controlerUser = new UserController(userRepo)
+const controlerUser = new UserController(userRepo);
 
 module.exports = {
-    controlerUser
-}
+  controlerUser,
+};

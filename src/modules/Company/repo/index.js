@@ -1,5 +1,5 @@
-const { CompanyRepo } = require( "./companyRepo.js");
+const { CompanyRepo } = require('./companyRepo');
 
-const companyRepo = new CompanyRepo()
+const companyRepo = new CompanyRepo();
 
 module.exports = { companyRepo };

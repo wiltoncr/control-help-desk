@@ -1,4 +1,4 @@
-require('./infra/database/index.js')
-require('./app.js')
-require('./server.js')
-require('./modules/User/controllers/index.js')
+require('./infra/database');
+require('./app');
+require('./server');
+require('./modules/User/controllers');

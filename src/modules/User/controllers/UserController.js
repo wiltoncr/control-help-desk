@@ -1,107 +1,102 @@
 const bcryptjs = require('bcryptjs');
+
 class UserController {
+  constructor(userRepo) {
+    this.userRepo = userRepo;
+  }
 
-    constructor(userRepo) {
-        this.userRepo = userRepo
+  static async show(req, res) {
+    try {
+      return res.json({ user: req.user });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal server error' });
     }
+  }
 
-    async show(req, res) {
-        try {
-            return res.json({ user: req.user });
-        } catch (err) {
-            console.log(err);
-            return res.status(500).json({ error: 'Internal server error' });
-        };
-    };
-
-    async delete(req, res) {
-        try {
-            const { id } = req.params;
-            if (!Number.isInteger(Number(id))) {
-                return res.status(400).json({ error: 'ID is not valid!' });
-            };
-            const user = await this.userRepo.deleteUserById(Number(id));
-            return res.status(200).json({ user })
-        } catch (err) {
-            console.log(err);
-            if(err.code = 'P2025'){
-                return res.status(404).json({ error: 'not Found!' });
-            };
-            return res.status(500).json({ error: 'Internal server error' });
-        }
+  async delete(req, res) {
+    try {
+      const { id } = req.params;
+      if (!Number.isInteger(Number(id))) {
+        return res.status(400).json({ error: 'ID is not valid!' });
+      }
+      const user = await this.userRepo.deleteUserById(Number(id));
+      return res.status(200).json({ user });
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error' });
     }
+  }
 
-    async createUser(req, res) {
-        try {
-            const { name, email, password, role = 'CLIENTE' } = req.body
+  async createUser(req, res) {
+    try {
+      const {
+        name, email, password, role = 'CLIENTE',
+      } = req.body;
 
-            if (!name || !email || !password) {
-                return res.status(400).json({
-                    error: "name, email and password is required."
-                });
-            };
+      if (!name || !email || !password) {
+        return res.status(400).json({
+          error: 'name, email and password is required.',
+        });
+      }
 
-            const password_hash = await bcryptjs.hash(password, 8);
+      const passwordHash = await bcryptjs.hash(password, 8);
 
-            const user = {
-                name: name,
-                email: email,
-                password: password_hash,
-                role: role
-            };
+      const user = {
+        name,
+        email,
+        password: passwordHash,
+        role,
+      };
 
-            const newUser = await this.userRepo.save(user);
-            return res.status(201).json({ user: newUser });
-        } catch (err) {
-            if (err.code == 'P2002') {
-                return res.status(400).json({ error: `error with  this fields ${err.meta.target[0]}` });
-            };
-            return res.status(500).json({ error: 'Internal server error' });
-        };
-    };
+      const newUser = await this.userRepo.save(user);
+      return res.status(201).json({ user: newUser });
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 
-    async getUserById(req, res) {
-        try {
-            const { id } = req.params;
-            if (!Number.isInteger(Number(id))) {
-                return res.status(400).json({ error: 'ID is not valid!' });
-            };
-            const user = await this.userRepo.getUserById(Number(id));
-            return res.status(200).json({ user });
-        } catch (err) {
-            console.log(err);
-            return res.status(500).json({ error: 'Internal server error' });
-        };
-    };
+  async getUserById(req, res) {
+    try {
+      const { id } = req.params;
+      if (!Number.isInteger(Number(id))) {
+        return res.status(400).json({ error: 'ID is not valid!' });
+      }
+      const user = await this.userRepo.getUserById(Number(id));
+      return res.status(200).json({ user });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 
-    async getUserByName(req, res) {
-        try {
-            const { name } = req.query;
-            if (!name) {
-                return res.status(400).json({ error: 'name is not valid or empty' });          
-            };
-            const user = await this.userRepo.getUserByName(name);
+  async getUserByName(req, res) {
+    try {
+      const { name } = req.query;
+      if (!name) {
+        return res.status(400).json({ error: 'name is not valid or empty' });
+      }
+      const user = await this.userRepo.getUserByName(name);
 
-            return res.status(200).json({ user })
-        } catch (err) {
-            console.log(err);
-            return res.status(500).json({ error: 'Internal server error' });
-        };
-    };
+      return res.status(200).json({ user });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 
-    async getUserByEmail(req, res) {
-        try {
-            const { email } = req.query;
-            if (!email) {
-                return res.status(400).json({ error: 'email is not valid or empty' });          
-            };
-            const user = await this.userRepo.getUserByEmail(email);
-            return res.status(200).json({ user });
-        } catch (err) {
-            console.log(err);
-            return res.status(500).json({ error: 'Internal server error' });
-        };
-    };
-};
+  async getUserByEmail(req, res) {
+    try {
+      const { email } = req.query;
+      if (!email) {
+        return res.status(400).json({ error: 'email is not valid or empty' });
+      }
+      const user = await this.userRepo.getUserByEmail(email);
+      return res.status(200).json({ user });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+}
 
 module.exports = { UserController };

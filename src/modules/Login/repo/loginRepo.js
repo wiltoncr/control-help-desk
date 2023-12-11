@@ -1,8 +1,5 @@
-
-const {prisma} = require( '../../../infra/database/prismaCliente.js');
-
 class LoginRepo {
 
-};
+}
 
-module.exports = {LoginRepo}
+module.exports = { LoginRepo };

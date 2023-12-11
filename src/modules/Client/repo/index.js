@@ -1,4 +1,4 @@
-const { ClientRepo }  = require( "./clientRepo.js");
+const { ClientRepo } = require('./clientRepo');
 
 const clientRepo = new ClientRepo();
 

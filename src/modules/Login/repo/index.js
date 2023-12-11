@@ -1,5 +1,5 @@
-const { LoginRepo } = require( "./loginRepo.js");
+const { LoginRepo } = require('./loginRepo');
 
-const loginRepo = new LoginRepo()
+const loginRepo = new LoginRepo();
 
-module.exports = { loginRepo }
+module.exports = { loginRepo };

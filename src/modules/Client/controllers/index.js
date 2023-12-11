@@ -1,9 +1,8 @@
-
-const { clientRepo }  = require( "../repo/index.js");
-const { ClientController }  = require( "./ClientController.js");
+const { clientRepo } = require('../repo/index');
+const { ClientController } = require('./ClientController');
 
 const controllerClient = new ClientController(clientRepo);
 
-module.exports = {  
-    controllerClient
-}
+module.exports = {
+  controllerClient,
+};
