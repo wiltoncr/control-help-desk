@@ -34,6 +34,11 @@ DATABASE_URL=postgres://USUARIO:SENHA@HOST/BANCO
 ![Texto Alternativo](screenshots/grid.png)
 ![Texto Alternativo](screenshots/menuBurger.png)
 ![Texto Alternativo](screenshots/modalRegister.png)
+## primeiro usuário
+email:teste@teste.com
+senha:teste1
+
+insert into User(email, password, name) values('teste@teste.com', '$2a$08$NELmFtgn7t8op3jhZCruVeM/k18.XTOjTbS/M2jh4UQaYkggz5/Om', 'SUPORTE')
 ## Licença
 
 Este projeto está sob a licença MIT.
