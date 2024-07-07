@@ -54,6 +54,34 @@ class LoginController {
       return res.status(401).json({ errors: ['Login necessário'] });
     }
   }
+
+  async token(req, res) {
+
+    const { authorization } = req.headers;
+    
+    if (!authorization) {
+      return res.status(401).json({ errors: ['Login necessário'] });
+    }
+    const token = authorization.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ error: 'Token não fornecido' });
+    }
+
+    jwt.verify(token, process.env.SECRET_TOKEN, (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ error: 'Token inválido ou expirado' });
+      }
+  
+      // Token é válido
+      const expiresAt = new Date(decoded.exp * 1000); // Decoded.exp é o timestamp de expiração do token
+      res.json({
+        status: 'success',
+        message: 'Token válido',
+        expiresAt: expiresAt.toISOString()
+      });
+    });
+  }
 }
 
 module.exports = { LoginController };
