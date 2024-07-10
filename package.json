@@ -27,7 +27,7 @@
     "eslint": "^8.55.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.29.0",
-    "nodemon": "^3.0.1",
+    "nodemon": "^3.1.4",
     "prisma": "^4.12.0"
   }
 }

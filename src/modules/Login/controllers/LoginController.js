@@ -42,9 +42,8 @@ class LoginController {
       const token = authorization.split(' ')[1];
       const payload = jwt.verify(token, process.env.SECRET_TOKEN);
 
-      req.user = { id: payload.id, email: payload.email };
-
       const user = await userRepo.getUserById(payload.id);
+      req.user = { id: payload.id, email: payload.email, name: user.name };
       if (user.email !== payload.email) {
         return res.status(401).json({ errors: ['Login necessário'] });
       }
