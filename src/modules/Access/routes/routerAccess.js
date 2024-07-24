@@ -12,6 +12,8 @@ routerAccess.get('/:id', controleLogin.required, (req, res) => controllerAccess.
 
 routerAccess.post('/', controleLogin.required, (req, res) => controllerAccess.createAccess(req, res));
 
+routerAccess.put('/', controleLogin.required, (req, res) => controllerAccess.updateAccess(req, res));
+
 routerAccess.delete('/:id', controleLogin.required, (req, res) => controllerAccess.delete(req, res));
 
 module.exports = { routerAccess };

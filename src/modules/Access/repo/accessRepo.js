@@ -42,8 +42,25 @@ class AccessRepo {
 
   async getAccessById(id) {
     const access = await prisma.access.findFirst({
+      include: {
+        clients: {
+          select: {
+            Client: true,
+          },
+        },
+      },
       where: { id },
     });
+
+
+    if (typeof access.clients[0] !== 'undefined') {
+      access.client = access.clients[0].Client;
+      delete access.clients;
+    } else {
+      access.client = { id: '', name: 'Não Encontrado!' };
+      delete access.clients;
+    }
+
     return access ?? [];
   }
 
