@@ -22,6 +22,7 @@ class AccessController {
       const access = await this.accessRepo.deleteAccessById(Number(id));
       return res.status(200).json({ access });
     } catch (err) {
+      console.log(err);
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -29,10 +30,10 @@ class AccessController {
   async createAccess(req, res) {
     try {
       const {
-        type, server, access, desc,
+        type, server, access, desc, idClient
       } = req.body;
 
-      if (!type || !server || !access || !desc) {
+      if (!type || !access || !desc || !idClient) {
         return res.status(400).json({
           error: 'type, server, access and desc is required.',
         });
@@ -40,13 +41,18 @@ class AccessController {
 
       if (!Number.isInteger(Number(type))) {
         return res.status(400).json({ error: 'type is not valid!' });
-      }
+      };
+
+      if(typeof server !== 'boolean'){
+        return res.status(400).json({ error: 'server is not valid!'});
+      };
 
       const payloadAccess = {
         type: Number(type),
         server: Boolean(server),
         access,
         desc,
+        idClient
       };
       const newAccess = await this.accessRepo.save(payloadAccess);
       return res.status(201).json({ access: newAccess });
@@ -62,9 +68,9 @@ class AccessController {
         id, type, server, access, desc, idClient
       } = req.body;
 
-      if (!id || !type || !server || !access || !desc || !idClient) {
+      if (!id || !type || !access || !desc || !idClient) {
         return res.status(400).json({
-          error: 'type, server, access and desc is required.',
+          error: 'type, access, idClient and desc is required.',
         });
       }
 
@@ -80,7 +86,7 @@ class AccessController {
         return res.status(400).json({ error: 'type is not valid!' });
       }
 
-      if (!typeof server === Boolean(server)) {
+      if (typeof server !== 'boolean') {
         return res.status(400).json({ error: 'Boolean value is not valid!' });
       }
 
@@ -92,7 +98,7 @@ class AccessController {
         desc,
         idClient
       };
-      const response = await this.accessRepo.save(payloadAccess);
+      const response = await this.accessRepo.update(payloadAccess);
       return res.status(201).json({ access: response });
     } catch (err) {
       console.log(err);

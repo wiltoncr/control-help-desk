@@ -1,4 +1,4 @@
-const { prisma } = require('../../../infra/database/prismaCliente');
+const { prisma, connect } = require('../../../infra/database/prismaCliente');
 
 class AccessRepo {
   async getAccess() {
@@ -26,19 +26,102 @@ class AccessRepo {
   }
 
   async deleteAccessById(id) {
-    const access = await prisma.access.delete({
+
+    const accessExists = await prisma.access.findUnique({
       where: { id },
-      include: {
-        clients: true,
-      },
     });
-    return access;
+  
+    if (!accessExists) {
+      throw new Error("Access not found");
+    }
+
+    const clientAccesses = await prisma.clientAccess.findFirst({
+      where: { accessId: id }
+    });
+
+    const result = await prisma.$transaction(async (prisma) => {
+
+        if(clientAccesses) {
+          await prisma.clientAccess.delete({where: {id : clientAccesses.id}});
+        }
+        
+        
+        const access = await prisma.access.delete({
+          where: { id },
+          include: {
+            clients: true,
+          },
+        });
+
+    return access ?? [];
+  });
+    return result ?? [];
   }
 
   async save(payloadAccess) {
-    const access = await prisma.access.create({ data: payloadAccess });
+    const { idClient, ...data } = payloadAccess;
+
+    const clientExists = await prisma.client.findUnique({
+      where: { id: Number(idClient) }
+    });
+
+    if (!clientExists) {
+      throw new Error('Cliente não encontrado');
+    }
+
+    const access = await prisma.access.create({ data });
+    
+    await prisma.clientAccess.create({
+      data: {
+        accessId: Number(access.id),
+        clientId: Number(idClient)
+      }
+    });
+
+    
     return access ?? [];
   }
+  async update(payloadAccess) {
+    const { id, idClient, ...data } = payloadAccess;
+  
+    const clientAccesses = await prisma.clientAccess.findFirst({
+      where: { accessId: id }
+    });
+
+    const updatedClients = await prisma.clientAccess.update({
+      where: { id: clientAccesses.id },
+      data: {
+        clientId: Number(idClient),
+      }
+    });
+
+    const access = await prisma.access.update({
+      where: { id },
+      data,
+      include: {
+        clients: {
+          take: 1,
+          select: {
+            Client: true,
+          },
+        },
+      }
+    });
+
+    const ac = access.clients[0].Client;
+
+    if (typeof ac !== 'undefined') {
+        access.client = {...ac};
+        delete access.clients;
+      } else {
+        access.client = { id: 0, name: 'Não Encontrado!' };
+        delete access.clients;
+      };
+
+  
+    return access ?? [];
+  }
+
 
   async getAccessById(id) {
     const access = await prisma.access.findFirst({
