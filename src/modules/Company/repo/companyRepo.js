@@ -48,6 +48,17 @@ class CompanyRepo {
     });
     return company ?? [];
   }
+
+  async update(payloadCompany) {
+    const { id, ...data } = payloadCompany;
+
+    const company = await prisma.company.update({
+      where: { id },
+      data
+    });
+  
+  return company ?? [];
+  }
 }
 
 module.exports = { CompanyRepo };

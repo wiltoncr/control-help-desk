@@ -12,6 +12,8 @@ routerCompanys.get('/getByEmail', controleLogin.required, (req, res) => controll
 
 routerCompanys.get('/:id', controleLogin.required, (req, res) => controllerCompany.getCompanyById(req, res));
 
+routerCompanys.put('/', controleLogin.required, (req, res) => controllerCompany.updateCompany(req, res));
+
 routerCompanys.post('/', controleLogin.required, (req, res) => controllerCompany.createCompany(req, res));
 
 routerCompanys.delete('/:id', controleLogin.required, (req, res) => controllerCompany.delete(req, res));

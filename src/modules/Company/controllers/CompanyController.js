@@ -3,6 +3,36 @@ class CompanyController {
     this.companyRepo = companyRepo;
   }
 
+  async updateCompany(req, res) {
+    try {
+      const {
+        id, name, cnpj, email
+      } = req.body;
+
+      if (!id || !name || !cnpj || !email ) {
+        return res.status(400).json({
+          error: 'id, name, cnpj and email is required.',
+        });
+      }
+
+      if (!Number.isInteger(Number(id))) {
+        return res.status(400).json({ error: 'id is not valid!' });
+      }
+
+      const payloadCompany = {
+        id,
+        name,
+        cnpj,
+        email
+      };
+      const response = await this.companyRepo.update(payloadCompany);
+      return res.status(201).json({ companys: [response] });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
   async getAll(req, res) {
     try {
       const companys = await this.companyRepo.getCompany();
@@ -20,7 +50,7 @@ class CompanyController {
         return res.status(400).json({ error: 'ID is not valid!' });
       }
       const company = await this.companyRepo.deleteCompanyById(Number(id));
-      return res.status(200).json({ company });
+      return res.status(200).json({ companys: [company] });
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error' });
     }
@@ -42,7 +72,7 @@ class CompanyController {
       };
 
       const newCompany = await this.companyRepo.save(company);
-      return res.status(201).json({ company: newCompany });
+      return res.status(201).json({ companys: [newCompany] });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ error: 'Internal server error' });
@@ -56,7 +86,7 @@ class CompanyController {
         return res.status(400).json({ error: 'ID is not valid!' });
       }
       const company = await this.companyRepo.getCompanyById(Number(id));
-      return res.status(200).json({ company });
+      return res.status(200).json({ companys: [company] });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ error: 'Internal server error' });
