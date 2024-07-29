@@ -48,6 +48,17 @@ class ClientRepo {
     });
     return client ?? [];
   }
+
+  async update(payloadClient) {
+    const { id, ...data } = payloadClient;
+
+    const client = await prisma.client.update({
+      where: { id },
+      data
+    });
+  
+    return client ?? [];
+  }
 }
 
 module.exports = { ClientRepo };

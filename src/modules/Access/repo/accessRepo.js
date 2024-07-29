@@ -122,7 +122,6 @@ class AccessRepo {
     return access ?? [];
   }
 
-
   async getAccessById(id) {
     const access = await prisma.access.findFirst({
       include: {

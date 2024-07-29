@@ -13,6 +13,36 @@ class ClientController {
     }
   }
 
+  async updateClient(req, res) {
+    try {
+      const {
+        id, name, cnpj, email
+      } = req.body;
+
+      if (!id || !name || !cnpj || !email ) {
+        return res.status(400).json({
+          error: 'id, name, cnpj and email is required.',
+        });
+      }
+
+      if (!Number.isInteger(Number(id))) {
+        return res.status(400).json({ error: 'id is not valid!' });
+      }
+
+      const payloadAccess = {
+        id,
+        name,
+        cnpj,
+        email
+      };
+      const response = await this.clientRepo.update(payloadAccess);
+      return res.status(201).json({ clients: [response] });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
   async delete(req, res) {
     try {
       const { id } = req.params;
@@ -41,11 +71,13 @@ class ClientController {
   }
 
   async getClientById(req, res) {
+    const { id } = req.params;
+    if (!Number.isInteger(Number(id))) {
+      return res.status(400).json({ error: 'ID is not valid!' });
+    }
     try {
-      const { id } = req.query;
-      const idInt = parseInt(id);
-      const client = await this.clientRepo.getClientById(idInt);
-      return res.status(200).json({ client });
+      const client = await this.clientRepo.getClientById(Number(id));
+      return res.status(200).json({ clients: [client] });
     } catch (err) {
       console.log(err);
       return res.json({ error: 'Internal server error' });
