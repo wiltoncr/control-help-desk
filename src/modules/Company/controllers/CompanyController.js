@@ -35,7 +35,7 @@ class CompanyController {
 
   async getAll(req, res) {
     try {
-      const companys = await this.companyRepo.getCompany();
+      const companys = await this.companyRepo.getCompany(req.user.id);
       return res.json({ companys });
     } catch (err) {
       console.log(err);

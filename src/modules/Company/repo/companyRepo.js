@@ -1,7 +1,7 @@
 const { prisma } = require('../../../infra/database/prismaCliente');
 
 class CompanyRepo {
-  async getCompany() {
+  async getCompany(id) {
     const company = await prisma.company.findMany();
     return company;
   }
