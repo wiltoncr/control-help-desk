@@ -5,7 +5,7 @@ class AccessController {
 
   async getAll(req, res) {
     try {
-      const access = await this.accessRepo.getAccess();
+      const access = await this.accessRepo.getAccess(req.user.id);
       return res.json({ access });
     } catch (err) {
       console.log(err);
@@ -19,7 +19,7 @@ class AccessController {
       if (!Number.isInteger(Number(id))) {
         return res.status(400).json({ error: 'ID is not valid!' });
       }
-      const access = await this.accessRepo.deleteAccessById(Number(id));
+      const access = await this.accessRepo.deleteAccessById(Number(id), req.user.id);
       return res.status(200).json({ access });
     } catch (err) {
       console.log(err);
@@ -54,7 +54,7 @@ class AccessController {
         desc,
         idClient
       };
-      const newAccess = await this.accessRepo.save(payloadAccess);
+      const newAccess = await this.accessRepo.save(payloadAccess, req.user.id);
       return res.status(201).json({ access: newAccess });
     } catch (err) {
       console.log(err);
@@ -72,23 +72,23 @@ class AccessController {
         return res.status(400).json({
           error: 'type, access, idClient and desc is required.',
         });
-      }
+      };
 
       if (!Number.isInteger(Number(id))) {
         return res.status(400).json({ error: 'id is not valid!' });
-      }
+      };
 
       if (!Number.isInteger(Number(idClient))) {
         return res.status(400).json({ error: 'idClient is not valid!' });
-      }
+      };
 
       if (!Number.isInteger(Number(type))) {
         return res.status(400).json({ error: 'type is not valid!' });
-      }
+      };
 
       if (typeof server !== 'boolean') {
         return res.status(400).json({ error: 'Boolean value is not valid!' });
-      }
+      };
 
       const payloadAccess = {
         id,
@@ -98,13 +98,13 @@ class AccessController {
         desc,
         idClient
       };
-      const response = await this.accessRepo.update(payloadAccess);
+      const response = await this.accessRepo.update(payloadAccess, req.user.id);
       return res.status(201).json({ access: response });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ error: 'Internal server error' });
-    }
-  }
+    };
+  };
 
   async getAccessById(req, res) {
     try {
@@ -112,7 +112,7 @@ class AccessController {
       if (!Number.isInteger(Number(id))) {
         return res.status(400).json({ error: 'ID is not valid!' });
       }
-      const access = await this.accessRepo.getAccessById(Number(id));
+      const access = await this.accessRepo.getAccessById(Number(id), req.user.id);
       return res.status(200).json({ access: [access]});
     } catch (err) {
       console.log(err);
@@ -126,7 +126,7 @@ class AccessController {
       if (!desc) {
         return res.status(400).json({ error: 'desc is empty!' });
       }
-      const access = await this.accessRepo.getAccessByDesc(desc);
+      const access = await this.accessRepo.getAccessByDesc(desc, req.user.id);
       return res.status(200).json({ access });
     } catch (err) {
       console.log(err);

@@ -4,7 +4,7 @@ const { controllerClient } = require('../controllers');
 
 const routerClient = express.Router();
 
-routerClient.get('/',  (req, res) => controllerClient.getAll(req, res));
+routerClient.get('/', controleLogin.required, (req, res) => controllerClient.getAll(req, res));
 
 routerClient.get('/:id', controleLogin.required, (req, res) => controllerClient.getClientById(req, res));
 

@@ -1,8 +1,21 @@
 const { prisma } = require('../../../infra/database/prismaCliente');
 
 class ClientRepo {
-  async getClient() {
-    const client = await prisma.client.findMany();
+  async getClient(idUser) {
+    const client = await prisma.client.findMany({
+      where: { CompanyClient:{
+        some: {
+          Company: {
+            CompanyUser:{
+              some:{
+                userId: idUser
+              },
+            },
+          },
+        },
+      },
+    },
+    });
     return client;
   }
 

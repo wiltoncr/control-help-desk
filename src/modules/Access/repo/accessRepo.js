@@ -1,8 +1,28 @@
 const { prisma, connect } = require('../../../infra/database/prismaCliente');
 
 class AccessRepo {
-  async getAccess() {
-    const access = await prisma.access.findMany({
+  async getAccess(id) {
+    const access = await prisma.access.findMany(
+    {
+      where: {
+        clients:{
+          some: {
+            Client: {
+              CompanyClient: {
+                some: {
+                  Company: {
+                    CompanyUser:{
+                      some: {
+                        userId: id
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       include: {
         clients: {
           select: {
@@ -25,15 +45,34 @@ class AccessRepo {
     return access;
   }
 
-  async deleteAccessById(id) {
+  async deleteAccessById(id, idUser) {
 
-    const accessExists = await prisma.access.findUnique({
-      where: { id },
+    const accessExists = await prisma.access.findFirst({
+      where: {
+        clients:{
+          some: {
+            Client: {
+              CompanyClient: {
+                some: {
+                  Company: {
+                    CompanyUser:{
+                      some: {
+                        userId: idUser
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        id
+      }
     });
   
     if (!accessExists) {
       throw new Error("Access not found");
-    }
+    };
 
     const clientAccesses = await prisma.clientAccess.findFirst({
       where: { accessId: id }
@@ -41,33 +80,45 @@ class AccessRepo {
 
     const result = await prisma.$transaction(async (prisma) => {
 
-        if(clientAccesses) {
-          await prisma.clientAccess.delete({where: {id : clientAccesses.id}});
-        }
+    if(clientAccesses) {
+      await prisma.clientAccess.delete({where: {id : clientAccesses.id}});
+   };
         
         
-        const access = await prisma.access.delete({
-          where: { id },
-          include: {
-            clients: true,
-          },
-        });
+    const access = await prisma.access.delete({
+      where: { id },
+      include: {
+         clients: true,
+        },
+    });
 
     return access ?? [];
   });
     return result ?? [];
   }
 
-  async save(payloadAccess) {
+  async save(payloadAccess, idUser) {
     const { idClient, ...data } = payloadAccess;
 
-    const clientExists = await prisma.client.findUnique({
-      where: { id: Number(idClient) }
+    const clientExists = await prisma.client.findFirst({
+      where: { CompanyClient:{
+        some: {
+          Company: {
+            CompanyUser:{
+              some:{
+                userId: idUser
+              },
+            },
+          },
+        },
+      },
+      id: Number(idClient)
+    },
     });
 
     if (!clientExists) {
       throw new Error('Cliente não encontrado');
-    }
+    };
 
     const access = await prisma.access.create({ data });
     
@@ -81,14 +132,35 @@ class AccessRepo {
     
     return access ?? [];
   }
-  async update(payloadAccess) {
+
+  async update(payloadAccess, idUser) {
     const { id, idClient, ...data } = payloadAccess;
   
-    const clientAccesses = await prisma.clientAccess.findFirst({
+    const clientExists = await prisma.client.findFirst({
+      where: { CompanyClient:{
+        some: {
+          Company: {
+            CompanyUser:{
+              some:{
+                userId: idUser
+              },
+            },
+          },
+        },
+      },
+      id: Number(idClient)
+    },
+    });
+
+    if (!clientExists) {
+      throw new Error('Cliente não encontrado');
+    };
+
+      const clientAccesses = await prisma.clientAccess.findFirst({
       where: { accessId: id }
     });
 
-    const updatedClients = await prisma.clientAccess.update({
+    await prisma.clientAccess.update({
       where: { id: clientAccesses.id },
       data: {
         clientId: Number(idClient),
@@ -122,33 +194,70 @@ class AccessRepo {
     return access ?? [];
   }
 
-  async getAccessById(id) {
-    const access = await prisma.access.findFirst({
-      include: {
-        clients: {
-          select: {
-            Client: true,
+  async getAccessById(id, idUser) {
+
+    const access = await prisma.access.findMany(
+      {
+        where: {
+          clients:{
+            some: {
+              Client: {
+                CompanyClient: {
+                  some: {
+                    Company: {
+                      CompanyUser:{
+                        some: {
+                          userId: idUser
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          id
+        },
+        include: {
+          clients: {
+            select: {
+              Client: true,
+            },
           },
         },
-      },
-      where: { id },
-    });
+      });
 
-
-    if (typeof access.clients[0] !== 'undefined') {
-      access.client = access.clients[0].Client;
-      delete access.clients;
+    if (typeof access[0].clients[0] !== 'undefined') {
+      access[0].client = access[0].clients[0].Client;
+      delete access[0].clients;
     } else {
-      access.client = { id: '', name: 'Não Encontrado!' };
-      delete access.clients;
+      access[0].client = { id: '', name: 'Não Encontrado!' };
+      delete access[0].clients;
     }
 
-    return access ?? [];
+    return access[0] ?? [];
   }
 
-  async getAccessByDesc(desc) {
+  async getAccessByDesc(desc, idUser) {
     const access = await prisma.access.findFirst({
       where: {
+        clients:{
+          some: {
+            Client: {
+              CompanyClient: {
+                some: {
+                  Company: {
+                    CompanyUser:{
+                      some: {
+                        userId: idUser
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         desc: {
           contains: desc,
           mode: 'insensitive',
