@@ -38,7 +38,7 @@ DATABASE_URL=postgres://USUARIO:SENHA@HOST/BANCO
 email:teste@teste.com
 senha:teste1
 
-insert into User(email, password, name) values('teste@teste.com', '$2a$08$NELmFtgn7t8op3jhZCruVeM/k18.XTOjTbS/M2jh4UQaYkggz5/Om', 'SUPORTE')
+insert into User(email, password, name) values('teste@teste.com', '$2a$08$1u5EZXSYv3vjSsBSCRXIMe8i.q4iHeT3of6SN8UB4KB4ROG5iJBPi', 'SUPORTE')
 ## Licença
 
 Este projeto está sob a licença MIT.

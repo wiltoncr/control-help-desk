@@ -39,6 +39,14 @@ class UserController {
         });
       }
 
+      const existEmail = await this.userRepo.getUserByEmail(email);
+      
+      if (existEmail) {
+        return res.status(400).json({
+          error: 'email has created',
+        });
+      }
+
       const passwordHash = await bcryptjs.hash(password, 8);
 
       const user = {

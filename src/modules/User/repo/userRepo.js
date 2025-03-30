@@ -57,6 +57,8 @@ class UserRepo {
 
   async passwordIsValid(password, hash) {
     const result = await bcryptjs.compare(password, hash);
+    console.log(result, password, hash);
+    
     return result;
   }
 }
