@@ -59,10 +59,10 @@ class ClientController {
 
   async createClient(req, res) {
     try {
-      const { name, cnpj, email } = req.body;
+      const { name, cnpj, email, companyId } = req.body;
       console.log(req.body);
       const payloadClient = { name, cnpj, email };
-      const newClient = await this.clientRepo.save(payloadClient);
+      const newClient = await this.clientRepo.save(payloadClient, companyId);
       return res.status(201).json({ client: newClient });
     } catch (err) {
       console.log(err);

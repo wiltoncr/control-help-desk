@@ -19,8 +19,16 @@ class ClientRepo {
     return client;
   }
 
-  async save(payloadClient) {
+  async save(payloadClient, companyId) {
     const client = await prisma.client.create({ data: payloadClient });
+
+    await prisma.companyClient.create(({
+      data: {
+        clientId: client.id,
+        companyId,
+      },
+    }));
+
     return client;
   }
 
