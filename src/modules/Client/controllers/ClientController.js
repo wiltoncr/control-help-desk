@@ -5,7 +5,7 @@ class ClientController {
 
   async getAll(req, res) {
     try {
-      const clients = await this.clientRepo.getClient(req.user.id);
+      const clients = await this.clientRepo.getClient(req.user.id);      
       return res.json({ clients });
     } catch (err) {
       console.log(err);
