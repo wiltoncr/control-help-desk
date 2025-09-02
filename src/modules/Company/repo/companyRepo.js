@@ -9,9 +9,7 @@ class CompanyRepo {
           },
         },
       },
-    });
-    console.log(company);
-    
+    });    
     return company;
   }
 
@@ -20,12 +18,19 @@ class CompanyRepo {
     return company;
   }
 
-  async getCompanyById(id) {
-    const company = await prisma.company.findFirst({
-      where: { id },
-    });
-    return company ?? [];
-  }
+  async getCompanyById(id, idUser) {
+  const company = await prisma.company.findFirst({
+    where: {
+      id,
+      CompanyUser: {
+        some: {
+          userId: idUser,
+        },
+      },
+    },
+  });
+  return company ?? [];
+}
 
   async deleteCompanyById(id) {
     const company = await prisma.company.delete({

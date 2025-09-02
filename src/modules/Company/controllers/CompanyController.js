@@ -85,7 +85,7 @@ class CompanyController {
       if (!Number.isInteger(Number(id))) {
         return res.status(400).json({ error: 'ID is not valid!' });
       }
-      const company = await this.companyRepo.getCompanyById(Number(id));
+      const company = await this.companyRepo.getCompanyById(Number(id), req.user.id);
       return res.status(200).json({ companys: [company] });
     } catch (err) {
       console.log(err);
