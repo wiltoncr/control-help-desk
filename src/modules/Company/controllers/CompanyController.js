@@ -25,7 +25,7 @@ class CompanyController {
         cnpj,
         email
       };
-      const response = await this.companyRepo.update(payloadCompany);
+      const response = await this.companyRepo.update(payloadCompany, req.user.id);
       return res.status(201).json({ companys: [response] });
     } catch (err) {
       console.log(err);
@@ -99,7 +99,7 @@ class CompanyController {
       if (!name) {
         return res.status(400).json({ error: 'name is not valid or empty' });
       }
-      const company = await this.companyRepo.getCompanyByName(name);
+      const company = await this.companyRepo.getCompanyByName(name, req.user.id);
 
       return res.status(200).json({ company });
     } catch (err) {
@@ -114,7 +114,7 @@ class CompanyController {
       if (!email) {
         return res.status(400).json({ error: 'email is not valid or empty' });
       }
-      const company = await this.companyRepo.getCompanyByEmail(email);
+      const company = await this.companyRepo.getCompanyByEmail(email, req.user.id);
       return res.status(200).json({ company });
     } catch (err) {
       console.log(err);

@@ -46,39 +46,55 @@ class CompanyRepo {
     return company;
   }
 
-  async getCompanyByName(name) {
+  async getCompanyByName(name, idUser) {
     const company = await prisma.company.findFirst({
       where: {
         name: {
           contains: name,
           mode: 'insensitive',
         },
-      },
-    });
-    return company ?? [];
-  }
-
-  async getCompanyByEmail(email) {
-    const company = await prisma.company.findFirst({
-      where: {
-        email: {
-          contains: email,
-          mode: 'insensitive',
+        CompanyUser: {
+          some: {
+            userId: idUser,
+          },
         },
       },
     });
     return company ?? [];
   }
 
-  async update(payloadCompany) {
+  async getCompanyByEmail(email, idUser) {
+    const company = await prisma.company.findFirst({
+      where: {
+        email: {
+          contains: email,
+          mode: 'insensitive',
+        },
+        CompanyUser: {
+          some: {
+            userId: idUser,
+          },
+        },
+      },
+    });
+    return company ?? [];
+  }
+
+  async update(payloadCompany, idUser) {
     const { id, ...data } = payloadCompany;
 
     const company = await prisma.company.update({
-      where: { id },
+      where: {
+        id,
+        CompanyUser: {
+          some: {
+            userId: idUser,
+          },
+        },
+       },
       data
     });
-  
-  return company ?? [];
+    return company ?? [];
   }
 }
 
