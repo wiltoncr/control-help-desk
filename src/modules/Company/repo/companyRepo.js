@@ -32,9 +32,16 @@ class CompanyRepo {
   return company ?? [];
 }
 
-  async deleteCompanyById(id) {
+  async deleteCompanyById(id, idUser) {
     const company = await prisma.company.delete({
-      where: { id },
+      where:  {
+        id,
+        CompanyUser: {
+          some: {
+            userId: idUser,
+          },
+        },
+      },
     });
     return company;
   }
