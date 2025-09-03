@@ -70,7 +70,6 @@ class ClientRepo {
     return client ?? [];
   }
 
-  
   async getByCompany(idUser, companyId) {
     const client = await prisma.client.findMany({
       where: { CompanyClient:{

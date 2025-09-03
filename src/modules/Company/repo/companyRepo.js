@@ -13,8 +13,15 @@ class CompanyRepo {
     return company;
   }
 
-  async save(newCompany) {
+  async save(newCompany, idUser) {
     const company = await prisma.company.create({ data: newCompany });
+
+    await prisma.companyUser.create(({
+      data: {
+        userId: idUser,
+        companyId: company.id,
+      },
+    }));
     return company;
   }
 

@@ -71,7 +71,7 @@ class CompanyController {
         name, email, cnpj, role,
       };
 
-      const newCompany = await this.companyRepo.save(company);
+      const newCompany = await this.companyRepo.save(company, req.user.id);
       return res.status(201).json({ companys: [newCompany] });
     } catch (err) {
       console.log(err);
