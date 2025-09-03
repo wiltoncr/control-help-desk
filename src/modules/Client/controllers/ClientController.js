@@ -13,6 +13,20 @@ class ClientController {
     }
   }
 
+    async getByCompany(req, res) {
+    try {
+      const {
+        companyId
+      } = req.body;
+
+      const clients = await this.clientRepo.getByCompany(req.user.id, companyId);      
+      return res.json({ clients });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
   async updateClient(req, res) {
     try {
       const {

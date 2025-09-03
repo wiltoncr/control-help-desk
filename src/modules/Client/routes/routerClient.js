@@ -18,4 +18,6 @@ routerClient.post('/', controleLogin.required, (req, res) => controllerClient.cr
 
 routerClient.delete('/:id', controleLogin.required, (req, res) => controllerClient.delete(req, res));
 
+routerClient.post('/getByCompany', controleLogin.required, (req, res) => controllerClient.getByCompany(req, res));
+
 module.exports = { routerClient };

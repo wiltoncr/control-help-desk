@@ -70,6 +70,26 @@ class ClientRepo {
     return client ?? [];
   }
 
+  
+  async getByCompany(idUser, companyId) {
+    const client = await prisma.client.findMany({
+      where: { CompanyClient:{
+        some: {
+          Company: {
+            CompanyUser:{
+              some:{
+                userId: idUser
+              },
+            },
+            id: companyId,
+          },
+        },
+      },
+    },
+    });
+    return client;
+  }
+
   async update(payloadClient) {
     const { id, ...data } = payloadClient;
 
