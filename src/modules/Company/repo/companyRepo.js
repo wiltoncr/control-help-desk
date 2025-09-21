@@ -87,6 +87,17 @@ class CompanyRepo {
     return company ?? [];
   }
 
+  async getCompanyByClient(idClient) {
+  const company = await prisma.company.findFirst({
+    where: { CompanyClient: {
+      some:{
+        clientId: idClient
+      }
+    }},
+  });
+  return company ?? [];
+}
+
   async update(payloadCompany, idUser) {
     const { id, ...data } = payloadCompany;
 

@@ -13,7 +13,7 @@ class ClientController {
     }
   }
 
-    async getByCompany(req, res) {
+  async getByCompany(req, res) {
     try {
       const {
         companyId

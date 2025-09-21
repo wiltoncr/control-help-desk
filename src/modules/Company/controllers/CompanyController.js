@@ -43,6 +43,20 @@ class CompanyController {
     }
   }
 
+  async getByClient(req, res) {
+    try {
+      const {
+        idClient
+      } = req.body;
+
+      const companys = await this.companyRepo.getCompanyByClient(idClient);
+      return res.json({companys});
+    } catch (err) {
+       console.log(err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
   async delete(req, res) {
     try {
       const { id } = req.params;

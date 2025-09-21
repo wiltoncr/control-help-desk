@@ -18,6 +18,9 @@ routerCompanys.post('/', controleLogin.required, (req, res) => controllerCompany
 
 routerCompanys.delete('/:id', controleLogin.required, (req, res) => controllerCompany.delete(req, res));
 
+routerCompanys.post('/getByClient', controleLogin.required, (req, res) => controllerCompany.getByClient(req, res));
+
+
 module.exports = {
   routerCompanys,
 };
